@@ -1,0 +1,62 @@
+
+R version 4.4.0 (2024-04-24) -- "Puppy Cup"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(NBZIMM)
+> library(foreach)
+> library(huge)
+> library(glmmTMB)
+> library(Matrix)
+> source("func2.R")
+> source("initial_param0.R")
+Generating data from the multivariate normal distribution with the scale-free graph structure....done.
+Generating data from the multivariate normal distribution with the scale-free graph structure....done.
+> ############################################################
+> path = paste0("~/scratch/dataset/RR","/",nsubj,"_",ntaxa,"/zinbmm")
+> path
+[1] "~/scratch/dataset/RR/150_500/zinbmm"
+> 
+> 
+> files =   list.files(path, full.names = TRUE)
+> 
+> res   = foreach(i = files,.combine = "cbind",.packages = "NBZIMM") %do% {
++      mod   =   readRDS(i)
++      pp    =   fixed(mod)$dist
++      pp[(pp$variables) == "grouptreat",][["Estimate"]]
++ }
+Warning messages:
+1: In fun(result.1, result.2, result.3, result.4, result.5, result.6,  :
+  number of rows of result is not a multiple of vector length (arg 6)
+2: In fun(accum, result.101, result.102, result.103, result.104, result.105,  :
+  number of rows of result is not a multiple of vector length (arg 6)
+3: In fun(accum, result.200, result.201, result.202, result.203, result.204,  :
+  number of rows of result is not a multiple of vector length (arg 33)
+4: In fun(accum, result.299, result.300, result.301, result.302, result.303,  :
+  number of rows of result is not a multiple of vector length (arg 19)
+5: In fun(accum, result.398, result.399, result.400, result.401, result.402,  :
+  number of rows of result is not a multiple of vector length (arg 32)
+> dd    =   as.data.frame(res)
+> rownames(dd)  =	 paste0("taxon",1:ntaxa)
+> colnames(dd)  =    paste0("nsim",1:ncol(dd))
+> saveRDS(dd, file = paste0(getwd(),"/",nsubj,"_",ntaxa,"/zinbmm.rds"))
+> 
+> proc.time()
+    user   system  elapsed 
+4582.386 2138.560 6984.889 

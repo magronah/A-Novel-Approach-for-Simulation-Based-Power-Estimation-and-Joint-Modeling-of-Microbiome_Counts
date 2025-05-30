@@ -1,0 +1,127 @@
+
+R version 4.4.0 (2024-04-24) -- "Puppy Cup"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(foreach)
+> library(NBZIMM)
+> library(MASS)
+> library(nlme)
+> ###############################################################
+> source("/project/6006158/agronahm/reduced_rank_mm/func2.R")
+> 
+> # Define sets of nsubj and ntaxa
+> parameter_sets <- list(
++  list(nsubj = 100, ntaxa = 300),
++  list(nsubj = 150, ntaxa = 500),
++  list(nsubj = 200, ntaxa = 600)
++ )
+> 
+> 
+> for (params in parameter_sets) {
++   
++   nsubj <- params$nsubj
++   ntaxa <- params$ntaxa
++   
++  # mod_type = c("nbmm", "zinbmm")
++   nam    = "nbmm"
++   #for(nam in mod_type){
++     path    =   paste0("~/scratch/dataset/RR","/",nsubj,"_",ntaxa,"/",nam)
++     files   =   list.files(path, full.names = TRUE)
++     
++     res    =  foreach(i = files, .combine = "cbind", .packages = "dplyr") %do% {
++               mod  =  readRDS(i) 
++               rs   =  as.data.frame(fixed(mod))
++               
++               pr <- rs %>% 
++               filter(grepl("grouptreat", rownames(rs)))
++               pr[["dist.padj"]]
++     }
++     dd            =    as.data.frame(res)
++     colnames(dd)  =    paste0("nsim", 1:ncol(dd))
++     rownames(dd)  =    paste0("taxon",1:ntaxa)
++     
++     # Create output directory if it doesn't exist
++     path2 <- paste0("/project/6006158/agronahm/reduced_rank_mm/", nsubj, "_", ntaxa, "/")
++     
++     file_path <- paste0(path2, "pvalues/")
++     if (!dir.exists(file_path)) {
++       dir.create(file_path, recursive = TRUE)
++       cat("Folder created at:", file_path, "\n")
++     } else {
++       cat("Folder already exists at:", file_path, "\n")
++     }
++     
++     saveRDS(dd, file = paste0(file_path,nam,".rds"))
++     print(nam)
++   #}
++ 
++ 
++ }
+
+Attaching package: ‘dplyr’
+
+The following object is masked from ‘package:nlme’:
+
+    collapse
+
+The following object is masked from ‘package:MASS’:
+
+    select
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Folder already exists at: /project/6006158/agronahm/reduced_rank_mm/100_300/pvalues/ 
+[1] "nbmm"
+Folder already exists at: /project/6006158/agronahm/reduced_rank_mm/150_500/pvalues/ 
+[1] "nbmm"
+Folder already exists at: /project/6006158/agronahm/reduced_rank_mm/200_600/pvalues/ 
+[1] "nbmm"
+Warning messages:
+1: In fun(result.1, result.2, result.3, result.4, result.5, result.6,  :
+  number of rows of result is not a multiple of vector length (arg 6)
+2: In fun(accum, result.101, result.102, result.103, result.104, result.105,  :
+  number of rows of result is not a multiple of vector length (arg 6)
+3: In fun(accum, result.200, result.201, result.202, result.203, result.204,  :
+  number of rows of result is not a multiple of vector length (arg 33)
+4: In fun(accum, result.299, result.300, result.301, result.302, result.303,  :
+  number of rows of result is not a multiple of vector length (arg 19)
+5: In fun(accum, result.398, result.399, result.400, result.401, result.402,  :
+  number of rows of result is not a multiple of vector length (arg 43)
+6: In fun(result.1, result.2, result.3, result.4, result.5, result.6,  :
+  number of rows of result is not a multiple of vector length (arg 12)
+7: In fun(accum, result.101, result.102, result.103, result.104, result.105,  :
+  number of rows of result is not a multiple of vector length (arg 9)
+8: In fun(accum, result.200, result.201, result.202, result.203, result.204,  :
+  number of rows of result is not a multiple of vector length (arg 29)
+9: In fun(accum, result.299, result.300, result.301, result.302, result.303,  :
+  number of rows of result is not a multiple of vector length (arg 9)
+10: In fun(accum, result.398, result.399, result.400, result.401, result.402,  :
+  number of rows of result is not a multiple of vector length (arg 10)
+> 
+> 
+> proc.time()
+    user   system  elapsed 
+4385.645 1717.515 7235.691 

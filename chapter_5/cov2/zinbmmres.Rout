@@ -1,0 +1,322 @@
+
+R version 4.4.0 (2024-04-24) -- "Puppy Cup"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> setwd("/home/agronahm/projects/def-bolker/agronahm/reduced_rank_mm/")
+> library(MASS)
+> library(nlme)
+> library(NBZIMM)
+> library(foreach)
+> library(huge)
+> library(glmmTMB)
+> library(Matrix)
+> source("func2.R")
+> source("initial_param0.R")
+Generating data from the multivariate normal distribution with the scale-free graph structure....done.
+Generating data from the multivariate normal distribution with the scale-free graph structure....done.
+> ############################################################
+> path = paste0("~/scratch/coverage/",nsubj,"_",ntaxa,"/zinbmm")
+> path
+[1] "~/scratch/coverage/200_600/zinbmm"
+> 
+> 
+> files =  list.files(path, full.names = TRUE)
+> 
+> sub    =  500
+> list1  =  list2  =  list()
+> 
+> for(i in files[1:sub]){
++      mod   =   readRDS(i)
++      pp    =   fixed(mod)$dist
++      ppp   =   pp[(pp$variables) == "grouptreat",][["Estimate"]]
++      names(ppp)  =  mod$response
++      list1[[i]]  =  ppp
++      list2[[i]]  =  unlist(lapply(mod$fit, function(x){
++                                         (summary(x))$tTable["grouptreat", "p-value"]}))
++ 
++ # Print the result
++ # unlist(lapply(mod,function(x) {summary(x)$coefficients$cond[, "Pr(>|z|)"][["grouptreat"]]}))
++ }
+> 
+> common_names1 <- Reduce(intersect, lapply(list1, names))
+> filtered_res1  <- lapply(list1, function(x) x[common_names1])
+> res1	 <- do.call(cbind, filtered_res1)
+> 
+> dd1    =   as.data.frame(res1)
+> print(common_names1)
+  [1] "taxon1"   "taxon2"   "taxon3"   "taxon4"   "taxon5"   "taxon6"  
+  [7] "taxon7"   "taxon8"   "taxon9"   "taxon10"  "taxon11"  "taxon12" 
+ [13] "taxon13"  "taxon14"  "taxon15"  "taxon16"  "taxon17"  "taxon18" 
+ [19] "taxon19"  "taxon20"  "taxon21"  "taxon22"  "taxon23"  "taxon24" 
+ [25] "taxon25"  "taxon26"  "taxon27"  "taxon28"  "taxon29"  "taxon30" 
+ [31] "taxon31"  "taxon32"  "taxon33"  "taxon34"  "taxon35"  "taxon36" 
+ [37] "taxon37"  "taxon38"  "taxon39"  "taxon40"  "taxon41"  "taxon42" 
+ [43] "taxon43"  "taxon44"  "taxon45"  "taxon46"  "taxon47"  "taxon48" 
+ [49] "taxon49"  "taxon50"  "taxon51"  "taxon52"  "taxon53"  "taxon54" 
+ [55] "taxon55"  "taxon56"  "taxon57"  "taxon58"  "taxon59"  "taxon60" 
+ [61] "taxon61"  "taxon62"  "taxon63"  "taxon64"  "taxon65"  "taxon66" 
+ [67] "taxon67"  "taxon68"  "taxon69"  "taxon70"  "taxon71"  "taxon72" 
+ [73] "taxon73"  "taxon74"  "taxon75"  "taxon76"  "taxon77"  "taxon78" 
+ [79] "taxon79"  "taxon80"  "taxon81"  "taxon82"  "taxon83"  "taxon84" 
+ [85] "taxon85"  "taxon86"  "taxon87"  "taxon88"  "taxon89"  "taxon90" 
+ [91] "taxon91"  "taxon92"  "taxon93"  "taxon94"  "taxon95"  "taxon96" 
+ [97] "taxon97"  "taxon98"  "taxon99"  "taxon100" "taxon101" "taxon102"
+[103] "taxon104" "taxon105" "taxon106" "taxon107" "taxon108" "taxon109"
+[109] "taxon110" "taxon111" "taxon112" "taxon113" "taxon114" "taxon115"
+[115] "taxon116" "taxon117" "taxon118" "taxon119" "taxon120" "taxon121"
+[121] "taxon122" "taxon123" "taxon124" "taxon125" "taxon126" "taxon127"
+[127] "taxon128" "taxon129" "taxon130" "taxon131" "taxon132" "taxon133"
+[133] "taxon134" "taxon135" "taxon136" "taxon137" "taxon138" "taxon139"
+[139] "taxon140" "taxon141" "taxon142" "taxon143" "taxon144" "taxon145"
+[145] "taxon146" "taxon147" "taxon148" "taxon149" "taxon150" "taxon151"
+[151] "taxon152" "taxon153" "taxon154" "taxon155" "taxon156" "taxon157"
+[157] "taxon158" "taxon159" "taxon160" "taxon161" "taxon162" "taxon163"
+[163] "taxon164" "taxon165" "taxon166" "taxon167" "taxon168" "taxon169"
+[169] "taxon170" "taxon171" "taxon172" "taxon173" "taxon174" "taxon175"
+[175] "taxon176" "taxon177" "taxon178" "taxon179" "taxon180" "taxon181"
+[181] "taxon182" "taxon183" "taxon184" "taxon185" "taxon186" "taxon187"
+[187] "taxon188" "taxon189" "taxon190" "taxon191" "taxon192" "taxon193"
+[193] "taxon194" "taxon195" "taxon196" "taxon197" "taxon198" "taxon199"
+[199] "taxon200" "taxon201" "taxon202" "taxon203" "taxon204" "taxon205"
+[205] "taxon206" "taxon207" "taxon208" "taxon209" "taxon210" "taxon211"
+[211] "taxon212" "taxon213" "taxon214" "taxon215" "taxon216" "taxon217"
+[217] "taxon218" "taxon219" "taxon220" "taxon221" "taxon222" "taxon223"
+[223] "taxon224" "taxon225" "taxon226" "taxon227" "taxon228" "taxon229"
+[229] "taxon230" "taxon231" "taxon232" "taxon233" "taxon234" "taxon235"
+[235] "taxon236" "taxon237" "taxon238" "taxon239" "taxon240" "taxon241"
+[241] "taxon242" "taxon243" "taxon244" "taxon245" "taxon246" "taxon247"
+[247] "taxon248" "taxon249" "taxon250" "taxon251" "taxon252" "taxon253"
+[253] "taxon254" "taxon255" "taxon256" "taxon257" "taxon258" "taxon259"
+[259] "taxon260" "taxon261" "taxon262" "taxon263" "taxon264" "taxon265"
+[265] "taxon266" "taxon267" "taxon268" "taxon269" "taxon270" "taxon271"
+[271] "taxon272" "taxon273" "taxon274" "taxon275" "taxon276" "taxon277"
+[277] "taxon278" "taxon279" "taxon280" "taxon281" "taxon282" "taxon283"
+[283] "taxon284" "taxon285" "taxon286" "taxon287" "taxon288" "taxon289"
+[289] "taxon290" "taxon291" "taxon292" "taxon293" "taxon294" "taxon295"
+[295] "taxon296" "taxon297" "taxon298" "taxon299" "taxon300" "taxon301"
+[301] "taxon302" "taxon303" "taxon304" "taxon305" "taxon306" "taxon307"
+[307] "taxon308" "taxon309" "taxon310" "taxon311" "taxon312" "taxon313"
+[313] "taxon314" "taxon315" "taxon316" "taxon317" "taxon318" "taxon319"
+[319] "taxon320" "taxon321" "taxon322" "taxon323" "taxon324" "taxon325"
+[325] "taxon326" "taxon327" "taxon328" "taxon329" "taxon330" "taxon331"
+[331] "taxon332" "taxon333" "taxon334" "taxon335" "taxon336" "taxon337"
+[337] "taxon338" "taxon339" "taxon340" "taxon341" "taxon342" "taxon343"
+[343] "taxon344" "taxon345" "taxon346" "taxon347" "taxon348" "taxon349"
+[349] "taxon350" "taxon351" "taxon352" "taxon353" "taxon354" "taxon355"
+[355] "taxon356" "taxon357" "taxon358" "taxon359" "taxon360" "taxon361"
+[361] "taxon362" "taxon363" "taxon364" "taxon365" "taxon366" "taxon367"
+[367] "taxon368" "taxon369" "taxon370" "taxon371" "taxon372" "taxon373"
+[373] "taxon374" "taxon375" "taxon376" "taxon377" "taxon378" "taxon379"
+[379] "taxon380" "taxon381" "taxon382" "taxon383" "taxon384" "taxon385"
+[385] "taxon386" "taxon387" "taxon388" "taxon389" "taxon390" "taxon391"
+[391] "taxon392" "taxon393" "taxon394" "taxon395" "taxon396" "taxon397"
+[397] "taxon398" "taxon399" "taxon400" "taxon401" "taxon402" "taxon403"
+[403] "taxon404" "taxon405" "taxon406" "taxon407" "taxon408" "taxon409"
+[409] "taxon410" "taxon411" "taxon412" "taxon413" "taxon414" "taxon415"
+[415] "taxon416" "taxon417" "taxon418" "taxon419" "taxon420" "taxon421"
+[421] "taxon422" "taxon423" "taxon424" "taxon425" "taxon426" "taxon427"
+[427] "taxon428" "taxon429" "taxon430" "taxon431" "taxon432" "taxon433"
+[433] "taxon434" "taxon435" "taxon436" "taxon437" "taxon438" "taxon439"
+[439] "taxon440" "taxon441" "taxon442" "taxon443" "taxon444" "taxon445"
+[445] "taxon446" "taxon447" "taxon448" "taxon449" "taxon450" "taxon451"
+[451] "taxon452" "taxon453" "taxon454" "taxon455" "taxon456" "taxon457"
+[457] "taxon458" "taxon459" "taxon460" "taxon461" "taxon462" "taxon463"
+[463] "taxon464" "taxon465" "taxon466" "taxon467" "taxon468" "taxon469"
+[469] "taxon470" "taxon471" "taxon472" "taxon473" "taxon474" "taxon475"
+[475] "taxon476" "taxon477" "taxon478" "taxon479" "taxon480" "taxon481"
+[481] "taxon482" "taxon483" "taxon484" "taxon485" "taxon486" "taxon487"
+[487] "taxon488" "taxon489" "taxon490" "taxon491" "taxon492" "taxon493"
+[493] "taxon494" "taxon495" "taxon496" "taxon497" "taxon498" "taxon499"
+[499] "taxon500" "taxon501" "taxon502" "taxon503" "taxon504" "taxon505"
+[505] "taxon506" "taxon507" "taxon508" "taxon509" "taxon510" "taxon511"
+[511] "taxon512" "taxon513" "taxon514" "taxon515" "taxon516" "taxon517"
+[517] "taxon518" "taxon519" "taxon520" "taxon521" "taxon522" "taxon523"
+[523] "taxon524" "taxon525" "taxon526" "taxon527" "taxon528" "taxon529"
+[529] "taxon530" "taxon531" "taxon532" "taxon533" "taxon534" "taxon535"
+[535] "taxon536" "taxon537" "taxon538" "taxon539" "taxon540" "taxon541"
+[541] "taxon542" "taxon543" "taxon544" "taxon545" "taxon546" "taxon547"
+[547] "taxon548" "taxon549" "taxon550" "taxon551" "taxon552" "taxon553"
+[553] "taxon554" "taxon555" "taxon556" "taxon557" "taxon558" "taxon559"
+[559] "taxon560" "taxon561" "taxon562" "taxon563" "taxon564" "taxon565"
+[565] "taxon566" "taxon567" "taxon568" "taxon569" "taxon570" "taxon571"
+[571] "taxon572" "taxon573" "taxon574" "taxon575" "taxon576" "taxon577"
+[577] "taxon578" "taxon579" "taxon580" "taxon581" "taxon582" "taxon583"
+[583] "taxon584" "taxon585" "taxon586" "taxon587" "taxon588" "taxon589"
+[589] "taxon590" "taxon591" "taxon592" "taxon593" "taxon594" "taxon595"
+[595] "taxon596" "taxon597" "taxon598" "taxon599" "taxon600"
+> #rownames(dd)  =  paste0("taxon",1:ntaxa)
+> colnames(dd1)  =    paste0("nsim",1:ncol(dd1))
+> saveRDS(dd1, file = paste0("cov2/",nsubj,"_",ntaxa,"/zinbmm.rds"))
+> 
+> ###########################################################
+> common_names2 <- Reduce(intersect, lapply(list2, names))
+> filtered_res2  <- lapply(list2, function(x) x[common_names2])
+> res2     <- do.call(cbind, filtered_res2)
+> 
+> print(common_names2)
+  [1] "taxon1"   "taxon2"   "taxon3"   "taxon4"   "taxon5"   "taxon6"  
+  [7] "taxon7"   "taxon8"   "taxon9"   "taxon10"  "taxon11"  "taxon12" 
+ [13] "taxon13"  "taxon14"  "taxon15"  "taxon16"  "taxon17"  "taxon18" 
+ [19] "taxon19"  "taxon20"  "taxon21"  "taxon22"  "taxon23"  "taxon24" 
+ [25] "taxon25"  "taxon26"  "taxon27"  "taxon28"  "taxon29"  "taxon30" 
+ [31] "taxon31"  "taxon32"  "taxon33"  "taxon34"  "taxon35"  "taxon36" 
+ [37] "taxon37"  "taxon38"  "taxon39"  "taxon40"  "taxon41"  "taxon42" 
+ [43] "taxon43"  "taxon44"  "taxon45"  "taxon46"  "taxon47"  "taxon48" 
+ [49] "taxon49"  "taxon50"  "taxon51"  "taxon52"  "taxon53"  "taxon54" 
+ [55] "taxon55"  "taxon56"  "taxon57"  "taxon58"  "taxon59"  "taxon60" 
+ [61] "taxon61"  "taxon62"  "taxon63"  "taxon64"  "taxon65"  "taxon66" 
+ [67] "taxon67"  "taxon68"  "taxon69"  "taxon70"  "taxon71"  "taxon72" 
+ [73] "taxon73"  "taxon74"  "taxon75"  "taxon76"  "taxon77"  "taxon78" 
+ [79] "taxon79"  "taxon80"  "taxon81"  "taxon82"  "taxon83"  "taxon84" 
+ [85] "taxon85"  "taxon86"  "taxon87"  "taxon88"  "taxon89"  "taxon90" 
+ [91] "taxon91"  "taxon92"  "taxon93"  "taxon94"  "taxon95"  "taxon96" 
+ [97] "taxon97"  "taxon98"  "taxon99"  "taxon100" "taxon101" "taxon102"
+[103] "taxon104" "taxon105" "taxon106" "taxon107" "taxon108" "taxon109"
+[109] "taxon110" "taxon111" "taxon112" "taxon113" "taxon114" "taxon115"
+[115] "taxon116" "taxon117" "taxon118" "taxon119" "taxon120" "taxon121"
+[121] "taxon122" "taxon123" "taxon124" "taxon125" "taxon126" "taxon127"
+[127] "taxon128" "taxon129" "taxon130" "taxon131" "taxon132" "taxon133"
+[133] "taxon134" "taxon135" "taxon136" "taxon137" "taxon138" "taxon139"
+[139] "taxon140" "taxon141" "taxon142" "taxon143" "taxon144" "taxon145"
+[145] "taxon146" "taxon147" "taxon148" "taxon149" "taxon150" "taxon151"
+[151] "taxon152" "taxon153" "taxon154" "taxon155" "taxon156" "taxon157"
+[157] "taxon158" "taxon159" "taxon160" "taxon161" "taxon162" "taxon163"
+[163] "taxon164" "taxon165" "taxon166" "taxon167" "taxon168" "taxon169"
+[169] "taxon170" "taxon171" "taxon172" "taxon173" "taxon174" "taxon175"
+[175] "taxon176" "taxon177" "taxon178" "taxon179" "taxon180" "taxon181"
+[181] "taxon182" "taxon183" "taxon184" "taxon185" "taxon186" "taxon187"
+[187] "taxon188" "taxon189" "taxon190" "taxon191" "taxon192" "taxon193"
+[193] "taxon194" "taxon195" "taxon196" "taxon197" "taxon198" "taxon199"
+[199] "taxon200" "taxon201" "taxon202" "taxon203" "taxon204" "taxon205"
+[205] "taxon206" "taxon207" "taxon208" "taxon209" "taxon210" "taxon211"
+[211] "taxon212" "taxon213" "taxon214" "taxon215" "taxon216" "taxon217"
+[217] "taxon218" "taxon219" "taxon220" "taxon221" "taxon222" "taxon223"
+[223] "taxon224" "taxon225" "taxon226" "taxon227" "taxon228" "taxon229"
+[229] "taxon230" "taxon231" "taxon232" "taxon233" "taxon234" "taxon235"
+[235] "taxon236" "taxon237" "taxon238" "taxon239" "taxon240" "taxon241"
+[241] "taxon242" "taxon243" "taxon244" "taxon245" "taxon246" "taxon247"
+[247] "taxon248" "taxon249" "taxon250" "taxon251" "taxon252" "taxon253"
+[253] "taxon254" "taxon255" "taxon256" "taxon257" "taxon258" "taxon259"
+[259] "taxon260" "taxon261" "taxon262" "taxon263" "taxon264" "taxon265"
+[265] "taxon266" "taxon267" "taxon268" "taxon269" "taxon270" "taxon271"
+[271] "taxon272" "taxon273" "taxon274" "taxon275" "taxon276" "taxon277"
+[277] "taxon278" "taxon279" "taxon280" "taxon281" "taxon282" "taxon283"
+[283] "taxon284" "taxon285" "taxon286" "taxon287" "taxon288" "taxon289"
+[289] "taxon290" "taxon291" "taxon292" "taxon293" "taxon294" "taxon295"
+[295] "taxon296" "taxon297" "taxon298" "taxon299" "taxon300" "taxon301"
+[301] "taxon302" "taxon303" "taxon304" "taxon305" "taxon306" "taxon307"
+[307] "taxon308" "taxon309" "taxon310" "taxon311" "taxon312" "taxon313"
+[313] "taxon314" "taxon315" "taxon316" "taxon317" "taxon318" "taxon319"
+[319] "taxon320" "taxon321" "taxon322" "taxon323" "taxon324" "taxon325"
+[325] "taxon326" "taxon327" "taxon328" "taxon329" "taxon330" "taxon331"
+[331] "taxon332" "taxon333" "taxon334" "taxon335" "taxon336" "taxon337"
+[337] "taxon338" "taxon339" "taxon340" "taxon341" "taxon342" "taxon343"
+[343] "taxon344" "taxon345" "taxon346" "taxon347" "taxon348" "taxon349"
+[349] "taxon350" "taxon351" "taxon352" "taxon353" "taxon354" "taxon355"
+[355] "taxon356" "taxon357" "taxon358" "taxon359" "taxon360" "taxon361"
+[361] "taxon362" "taxon363" "taxon364" "taxon365" "taxon366" "taxon367"
+[367] "taxon368" "taxon369" "taxon370" "taxon371" "taxon372" "taxon373"
+[373] "taxon374" "taxon375" "taxon376" "taxon377" "taxon378" "taxon379"
+[379] "taxon380" "taxon381" "taxon382" "taxon383" "taxon384" "taxon385"
+[385] "taxon386" "taxon387" "taxon388" "taxon389" "taxon390" "taxon391"
+[391] "taxon392" "taxon393" "taxon394" "taxon395" "taxon396" "taxon397"
+[397] "taxon398" "taxon399" "taxon400" "taxon401" "taxon402" "taxon403"
+[403] "taxon404" "taxon405" "taxon406" "taxon407" "taxon408" "taxon409"
+[409] "taxon410" "taxon411" "taxon412" "taxon413" "taxon414" "taxon415"
+[415] "taxon416" "taxon417" "taxon418" "taxon419" "taxon420" "taxon421"
+[421] "taxon422" "taxon423" "taxon424" "taxon425" "taxon426" "taxon427"
+[427] "taxon428" "taxon429" "taxon430" "taxon431" "taxon432" "taxon433"
+[433] "taxon434" "taxon435" "taxon436" "taxon437" "taxon438" "taxon439"
+[439] "taxon440" "taxon441" "taxon442" "taxon443" "taxon444" "taxon445"
+[445] "taxon446" "taxon447" "taxon448" "taxon449" "taxon450" "taxon451"
+[451] "taxon452" "taxon453" "taxon454" "taxon455" "taxon456" "taxon457"
+[457] "taxon458" "taxon459" "taxon460" "taxon461" "taxon462" "taxon463"
+[463] "taxon464" "taxon465" "taxon466" "taxon467" "taxon468" "taxon469"
+[469] "taxon470" "taxon471" "taxon472" "taxon473" "taxon474" "taxon475"
+[475] "taxon476" "taxon477" "taxon478" "taxon479" "taxon480" "taxon481"
+[481] "taxon482" "taxon483" "taxon484" "taxon485" "taxon486" "taxon487"
+[487] "taxon488" "taxon489" "taxon490" "taxon491" "taxon492" "taxon493"
+[493] "taxon494" "taxon495" "taxon496" "taxon497" "taxon498" "taxon499"
+[499] "taxon500" "taxon501" "taxon502" "taxon503" "taxon504" "taxon505"
+[505] "taxon506" "taxon507" "taxon508" "taxon509" "taxon510" "taxon511"
+[511] "taxon512" "taxon513" "taxon514" "taxon515" "taxon516" "taxon517"
+[517] "taxon518" "taxon519" "taxon520" "taxon521" "taxon522" "taxon523"
+[523] "taxon524" "taxon525" "taxon526" "taxon527" "taxon528" "taxon529"
+[529] "taxon530" "taxon531" "taxon532" "taxon533" "taxon534" "taxon535"
+[535] "taxon536" "taxon537" "taxon538" "taxon539" "taxon540" "taxon541"
+[541] "taxon542" "taxon543" "taxon544" "taxon545" "taxon546" "taxon547"
+[547] "taxon548" "taxon549" "taxon550" "taxon551" "taxon552" "taxon553"
+[553] "taxon554" "taxon555" "taxon556" "taxon557" "taxon558" "taxon559"
+[559] "taxon560" "taxon561" "taxon562" "taxon563" "taxon564" "taxon565"
+[565] "taxon566" "taxon567" "taxon568" "taxon569" "taxon570" "taxon571"
+[571] "taxon572" "taxon573" "taxon574" "taxon575" "taxon576" "taxon577"
+[577] "taxon578" "taxon579" "taxon580" "taxon581" "taxon582" "taxon583"
+[583] "taxon584" "taxon585" "taxon586" "taxon587" "taxon588" "taxon589"
+[589] "taxon590" "taxon591" "taxon592" "taxon593" "taxon594" "taxon595"
+[595] "taxon596" "taxon597" "taxon598" "taxon599" "taxon600"
+> dd2    =   as.data.frame(res2)
+> colnames(dd2)  =  paste0("sim",1:ncol(dd2))
+> saveRDS(dd2, file = paste0("cov2/",nsubj,"_",ntaxa,"/pvalues/zinbmm.rds"))
+> 
+> stopifnot(common_names1 == common_names2)
+> 
+> 
+> 
+> 
+> 
+> if(FALSE){
++ setwd("/home/agronahm/projects/def-bolker/agronahm/reduced_rank_mm/")
++ 
++ library(MASS)
++ library(nlme)
++ library(NBZIMM)
++ library(foreach)
++ library(huge)
++ library(glmmTMB)
++ library(Matrix)
++ source("func2.R")
++ source("initial_param0.R")
++ ############################################################
++ path = paste0("~/scratch/dataset/RR/coverage/",nsubj,"_",ntaxa,"/zinbmm")
++ path
++ 
++ 
++ files =   list.files(path, full.names = TRUE)
++ 
++ res   = foreach(i = files,.combine = "cbind",.packages = "NBZIMM") %do% {
++      mod   =   readRDS(i)
++      pp    =   fixed(mod)$dist
++     ppp    =   pp[(pp$variables) == "grouptreat",][["Estimate"]]
++     names(ppp)  =  mod$response
++      ppp
++ }
++ 
++ common_names <- Reduce(intersect, lapply(res, names))
++ filtered_res <- lapply(res, function(x) x[common_names])
++ res	 <- do.call(cbind, filtered_res)
++ 
++ 
++ dd    =   as.data.frame(res)
++ #rownames(dd)  =	 paste0("taxon",1:ntaxa)
++ colnames(dd)  =    paste0("nsim",1:ncol(dd))
++ saveRDS(dd, file = paste0("cov2/",nsubj,"_",ntaxa,"/zinbmm.rds"))
++ }
+> 
+> proc.time()
+    user   system  elapsed 
+4357.389   27.315 4454.807 

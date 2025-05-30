@@ -1,0 +1,37 @@
+setwd("/home/agronahm/projects/def-bolker/agronahm/reduced_rank_mm/")
+
+library(tibble)
+library(DESeq2)
+library(Matrix)
+library(huge)
+
+source("func2.R")
+source("initial_param0.R")
+
+path = paste0("cov2/",nsubj,"_",ntaxa,"/")
+path
+####################################################################
+data      =   readRDS(paste0(path,"sim_data/deseq_otu_meta_list_withzi_taxa.rds"))
+################################################################
+cc      =   commandArgs(trailingOnly  = TRUE)
+i       =   as.integer(cc[1]) 
+dd      =   data[[i]]
+################################################################
+countdata  =   dd$countdata
+met_dd     =   dd$met_data
+
+res        =   deseqfun(countdata,met_dd,ref_name="control")
+
+file_path  =  paste0("~/scratch/dataset/RR/coverage/",nsubj,"_",ntaxa,"/","deseq/")
+
+if (!dir.exists(file_path)) {
+  dir.create(file_path, recursive = TRUE)
+  cat("Folder created at:", file_path, "\n")
+} else {
+  cat("Folder already exists at:", file_path, "\n")
+}
+
+
+
+saveRDS(res, file=paste0(file_path,"mod",i,".rds"))
+

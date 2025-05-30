@@ -1,0 +1,63 @@
+
+R version 4.4.0 (2024-04-24) -- "Puppy Cup"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(foreach)
+> library(huge)
+> library(Matrix)
+> source("func2.R")
+> source("initial_param0.R")
+Generating data from the multivariate normal distribution with the scale-free graph structure....done.
+Generating data from the multivariate normal distribution with the scale-free graph structure....done.
+> ############################################################
+> path = paste0("~/scratch/dataset/RR","/",nsubj,"_",ntaxa,"/deseq_noShrink")
+> path
+[1] "~/scratch/dataset/RR/150_500/deseq_noShrink"
+> 
+> files          <-   list.files(path, full.names = TRUE)
+> 
+> res = foreach(i = files, .combine = "cbind") %do% {
++      r        =    readRDS(i)
++      r$log2FoldChange
++ }
+> 
+> dd             =    as.data.frame(res)
+> colnames(dd)  =    paste0("nsim", 1:ncol(dd))
+> rownames(dd)  =    paste0("taxon",1:nrow(dd))
+> 
+> saveRDS(dd, file = paste0(getwd(),"/",nsubj,"_",ntaxa,"/deseq_noShrink.rds"))
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+ 69.284   4.126 300.710 

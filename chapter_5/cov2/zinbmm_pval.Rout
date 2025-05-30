@@ -1,0 +1,55 @@
+
+R version 4.4.0 (2024-04-24) -- "Puppy Cup"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> setwd("/home/agronahm/projects/def-bolker/agronahm/reduced_rank_mm/")
+> 
+> library(foreach)
+> library(huge)
+> library(glmmTMB)
+> library(Matrix)
+> source("func2.R")
+> source("initial_param0.R")
+Generating data from the multivariate normal distribution with the scale-free graph structure....done.
+Generating data from the multivariate normal distribution with the scale-free graph structure....done.
+> ############################################################
+> path = paste0("~/scratch/dataset/RR/coverage/",200,"_",600,"/zinbmm2")
+> path
+[1] "~/scratch/dataset/RR/coverage/200_600/zinbmm2"
+> 
+> files <-   list.files(path, full.names = TRUE)
+> 
+> res = foreach(i = files,.combine ="c", .packages = "glmmTMB") %do% {
++   mod  =   readRDS(i)
++   unlist(lapply(mod,function(x) {summary(x)$coefficients$cond[, "Pr(>|z|)"][["grouptreat"]]}))
++ }
+> 
+> 
+> common_names <- Reduce(intersect, lapply(res, names))
+> print(common_names)
+NULL
+> filtered_res <- lapply(res, function(x) x[common_names])
+> res      <- do.call(cbind, filtered_res)
+> 
+> dd    =   as.data.frame(res)
+> #rownames(dd)  =  paste0("taxon",1:nrow(dd))
+> colnames(dd)  =  paste0("sim",1:ncol(dd))
+Error in names(x) <- value : 
+  'names' attribute [2] must be the same length as the vector [0]
+Calls: colnames<-
+Execution halted

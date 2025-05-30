@@ -1,0 +1,55 @@
+
+R version 4.4.0 (2024-04-24) -- "Puppy Cup"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(foreach)
+> library(huge)
+> library(glmmTMB)
+> library(Matrix)
+> library(here)
+here() starts at /project/6006158/agronahm/reduced_rank_mm
+> 
+> source("func2.R")
+> source("initial_param0.R")
+Generating data from the multivariate normal distribution with the scale-free graph structure....done.
+Generating data from the multivariate normal distribution with the scale-free graph structure....done.
+> ############################################################
+> path = paste0("~/scratch/data/coverage/",nsubj,"_",ntaxa,"/confint/rr")
+> path
+[1] "~/scratch/data/coverage/200_600/confint/rr"
+> 
+> files <-   list.files(path, full.names = TRUE)
+> 
+> res = foreach(i = files) %do% {
++     readRDS(i)
++ }
+> 
+> 
+> names(res)  =  paste0("sim",1:length(files))
+> saveRDS(res, file = paste0(nsubj,"_",ntaxa,"/confint/rr.rds"))
+> 
+> 
+> 
+> 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+ 16.999   1.323  60.870 
